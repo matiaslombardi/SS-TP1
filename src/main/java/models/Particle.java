@@ -5,29 +5,27 @@ public class Particle {
     private final double radius;
     private Point position;
     private final int id;
+    private final Set<Particle> neighbours;
 
     public Particle(double radius, int id) {
         this.radius = radius;
         this.id = id;
     }
 
-    public boolean isColliding(Particle other, boolean isPeriodic, double spaceSize, double gridM) {
-        double cellSize = spaceSize / gridM;
-
-        // TODO pasar a particle.distanceTo
-
-        double dx = Math.abs(position.getX() - other.getPosition().getX());
-        if (isPeriodic && dx > 2 * cellSize)
-            dx = spaceSize - dx;
-
-        double dy = Math.abs(position.getY() - other.getPosition().getY());
-        if (isPeriodic && dy > 2 * cellSize)
-            dy = spaceSize - dy;
-
-        double realDistance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) - radius - other.getRadius();
+    public boolean isColliding(Particle other, boolean isPeriodic, double spaceSize, int gridM) {
+        double realDistance = position.distanceTo(other.getPosition(), isPeriodic, spaceSize, gridM)
+                - radius - other.getRadius();
 
 //        double realDistance = position.distanceTo(other.getPosition()) - radius - other.getRadius();
         return Double.compare(realDistance, INTERACT_RADIUS) <= 0;
+    }
+
+    public void addNeighbour(Particle neighbour) {
+        neighbours.add(neighbour);
+    }
+
+    public void removeAllNeighbours() {
+        neighbours.clear();
     }
 
     public static double getInteractRadius() {

@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 public class Space {
     private final Cell[][] cells;
-    private int spaceSize;
-    private int gridM;
+    private final int spaceSize;
+    private final int gridM;
+    private final List<Particle> particleList;
     // private double interactionRadius;
 
     private void validateParams(int spaceSize, int gridM, double interactionRadius,
