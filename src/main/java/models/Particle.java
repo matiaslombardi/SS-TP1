@@ -11,8 +11,22 @@ public class Particle {
         this.id = id;
     }
 
-    public boolean isColliding(Particle other) {
-        double realDistance = position.distanceTo(other.getPosition()) - radius - other.getRadius();
+    public boolean isColliding(Particle other, boolean isPeriodic, double spaceSize, double gridM) {
+        double cellSize = spaceSize / gridM;
+
+        // TODO pasar a particle.distanceTo
+
+        double dx = Math.abs(position.getX() - other.getPosition().getX());
+        if (isPeriodic && dx > 2 * cellSize)
+            dx = spaceSize - dx;
+
+        double dy = Math.abs(position.getY() - other.getPosition().getY());
+        if (isPeriodic && dy > 2 * cellSize)
+            dy = spaceSize - dy;
+
+        double realDistance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) - radius - other.getRadius();
+
+//        double realDistance = position.distanceTo(other.getPosition()) - radius - other.getRadius();
         return Double.compare(realDistance, INTERACT_RADIUS) <= 0;
     }
 

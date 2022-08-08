@@ -21,8 +21,7 @@ public class Space {
     }
 
     public Space(int spaceSize, int gridM, double interactionRadius, List<Particle> particles) {
-        if ((double) spaceSize / gridM <= interactionRadius)
-            throw new RuntimeException("L/M");
+        validateParams(spaceSize, gridM, interactionRadius, particles);
 
         this.cells = new Cell[gridM][gridM];
         this.spaceSize = spaceSize;
