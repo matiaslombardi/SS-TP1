@@ -10,6 +10,16 @@ public class Space {
     private int gridM;
     // private double interactionRadius;
 
+    private void validateParams(int spaceSize, int gridM, double interactionRadius,
+                                   List<Particle> particles) {
+        double maxRadius = particles.stream()
+                .max((p1, p2) -> (int) (p1.getRadius() - p2.getRadius()))
+                .orElseThrow(RuntimeException::new).getRadius();
+
+        if ((double) spaceSize / gridM <= interactionRadius + 2 * maxRadius)
+            throw new RuntimeException("L/M");
+    }
+
     public Space(int spaceSize, int gridM, double interactionRadius, List<Particle> particles) {
         if ((double) spaceSize / gridM <= interactionRadius)
             throw new RuntimeException("L/M");
@@ -22,7 +32,7 @@ public class Space {
     }
 
     private void positionParticles(List<Particle> particles) {
-        double cellSize = (double) this.spaceSize / this.gridM;
+        double cellSize = (double) spaceSize / gridM;
         for (Particle particle : particles) {
             Point position = particle.getPosition();
             int row = (int) (position.getX() / cellSize);
@@ -35,7 +45,7 @@ public class Space {
 
     public List<Particle> getParticlesInRange(Particle particle, boolean isPeriodic) {
         List<Particle> particlesInRange = new ArrayList<>();
-        double cellSize = (double) this.spaceSize / this.gridM;
+        double cellSize = (double) spaceSize / gridM;
         int row = (int) (particle.getPosition().getX() / cellSize);
         int col = (int) (particle.getPosition().getY() / cellSize);
 
@@ -43,11 +53,13 @@ public class Space {
             for (int j = col - 1; j <= col + 1; j++) {
                 int currRow = Math.floorMod(i, gridM);
                 int currCol = Math.floorMod(j, gridM);
-                if (cells[currRow][currCol] == null || (!isPeriodic && (i < 0 || i >= gridM || j < 0 || j >= gridM)))
+                if (cells[currRow][currCol] == null
+                        || (!isPeriodic && (i < 0 || i >= gridM || j < 0 || j >= gridM)))
                     continue;
 
-                particlesInRange.addAll(cells[currRow][currCol]
-                        .getParticles().stream().filter(other -> other.getId() != particle.getId())
+                particlesInRange.addAll(cells[currRow][currCol].getParticles().stream().
+                        filter(other -> other.getId() != particle.getId()
+                                && particle.isColliding(other, isPeriodic, spaceSize, gridM))
                         .collect(Collectors.toList()));
             }
         }

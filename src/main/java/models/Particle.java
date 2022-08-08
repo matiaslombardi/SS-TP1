@@ -2,9 +2,9 @@ package main.java.models;
 
 public class Particle {
     private static double INTERACT_RADIUS;
-    private double radius;
+    private final double radius;
     private Point position;
-    private int id;
+    private final int id;
 
     public Particle(double radius, int id) {
         this.radius = radius;
@@ -28,10 +28,6 @@ public class Particle {
         return radius;
     }
 
-    public void setRadius(double radius) {
-        this.radius = radius;
-    }
-
     public Point getPosition() {
         return position;
     }
@@ -42,10 +38,6 @@ public class Particle {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
