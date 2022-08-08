@@ -59,8 +59,6 @@ public class ParticlesParser {
         Space space = new Space(spaceSize, 10, Particle.getInteractRadius(), particleList);
 
         List<Particle> neighbours = space.getParticlesInRange(particleList.get(0), false);
-        System.out.println(neighbours);
+        neighbours.forEach(System.out::println);
     }
-
-
 }

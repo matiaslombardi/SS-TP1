@@ -27,6 +27,8 @@ public class Space {
             Point position = particle.getPosition();
             int row = (int) (position.getX() / cellSize);
             int col = (int) (position.getY() / cellSize);
+            if (cells[row][col] == null)
+                cells[row][col] = new Cell();
             cells[row][col].addParticle(particle);
         }
     }
@@ -39,17 +41,14 @@ public class Space {
 
         for (int i = row - 1; i <= row + 1; i++) {
             for (int j = col - 1; j <= col + 1; j++) {
-                if (!isPeriodic && (i < 0 || i >= gridM || j < 0 || j >= gridM))
+                int currRow = Math.floorMod(i, gridM);
+                int currCol = Math.floorMod(j, gridM);
+                if (cells[currRow][currCol] == null || (!isPeriodic && (i < 0 || i >= gridM || j < 0 || j >= gridM)))
                     continue;
 
-                particlesInRange.addAll(cells[Math.floorMod(i, gridM)][Math.floorMod(j, gridM)]
-                        .getParticles().stream().filter(particle::isColliding)
+                particlesInRange.addAll(cells[currRow][currCol]
+                        .getParticles().stream().filter(other -> other.getId() != particle.getId())
                         .collect(Collectors.toList()));
-//                for (Particle neighbour: cells[i][j].getParticles()) {
-//                    if (particle.isColliding(neighbour)) {
-//                        particlesInRange.add(neighbour);
-//                    }
-//                }
             }
         }
         return particlesInRange;

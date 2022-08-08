@@ -7,8 +7,8 @@ import java.util.Objects;
 public class FileReader {
     public File getFile(String path) {
         try {
-            return new File(Objects.requireNonNull(getClass().getClassLoader().getResource(path)).toURI());
-        } catch (URISyntaxException | NullPointerException e) {
+            return new File(Objects.requireNonNull(getClass().getClassLoader().getResource(path)).getFile());
+        } catch (NullPointerException e) {
             throw new RuntimeException(e);
         }
     }
