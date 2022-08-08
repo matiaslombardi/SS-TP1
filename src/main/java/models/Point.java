@@ -9,8 +9,18 @@ public class Point {
         this.y = y;
     }
 
-    public double distanceTo(Point other) {
-        return Math.sqrt(Math.pow(x - other.getX(), 2) + Math.pow(y - other.getY(), 2));
+    public double distanceTo(Point other, boolean isPeriodic, double spaceSize, int gridM) {
+        double cellSize = spaceSize / gridM;
+
+        double dx = Math.abs(x - other.getX());
+        if (isPeriodic && dx > 2 * cellSize)
+            dx = spaceSize - dx;
+
+        double dy = Math.abs(y - other.getY());
+        if (isPeriodic && dy > 2 * cellSize)
+            dy = spaceSize - dy;
+
+        return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
 
     public double getX() {

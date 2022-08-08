@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class ParticlesParser {
     public static void main(String[] args) {
@@ -58,21 +59,24 @@ public class ParticlesParser {
 
                 // TODO los calculos son en cada t_i
 
-
             }
         } catch (FileNotFoundException | RuntimeException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
 
-        Particle.setInteractRadius(6); // TODO config
-        Space space = new Space(spaceSize, 6, Particle.getInteractRadius(), particleList);
+        Particle.setInteractRadius(3); // TODO config
+        Space space = new Space(spaceSize, 10, Particle.getInteractRadius(), particleList);
 
         long start = System.currentTimeMillis();
+        space.solve(false);
+        long end = System.currentTimeMillis();
+        System.out.printf("CIM time: %dms\n", end - start);
+
 
         try (FileWriter writer = new FileWriter("out.txt")) {
             for (Particle particle : particleList) {
-                List<Particle> neighbours = space.getParticlesInRange(particle, false);
+                Set<Particle> neighbours = particle.getNeighbours();
                 StringBuilder out = new StringBuilder(String.format("%d", particle.getId()));
                 for (Particle neighbour : neighbours)
                     out.append(String.format(" %d", neighbour.getId()));
@@ -84,8 +88,9 @@ public class ParticlesParser {
             e.printStackTrace();
         }
 
-        long end = System.currentTimeMillis();
-        System.out.printf("Time: %dms", end - start);
-
+        start = System.currentTimeMillis();
+        space.bruteForceSolve(false);
+        end = System.currentTimeMillis();
+        System.out.printf("Brute force time: %dms\n", end - start);
     }
 }

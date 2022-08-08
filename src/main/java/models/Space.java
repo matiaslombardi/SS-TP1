@@ -1,10 +1,15 @@
 package main.java.models;
 
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Space {
+    private final static int[][] DIRECTIONS =
+            new int[][]{new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 0}, new int[]{0, 1}, new int[]{1, 1}};
+
     private final Cell[][] cells;
     private final int spaceSize;
     private final int gridM;
@@ -28,6 +33,7 @@ public class Space {
         this.spaceSize = spaceSize;
         this.gridM = gridM;
         this.positionParticles(particles);
+        this.particleList = particles;
 //        this.interactionRadius = interactionRadius;
     }
 
@@ -43,26 +49,56 @@ public class Space {
         }
     }
 
-    public List<Particle> getParticlesInRange(Particle particle, boolean isPeriodic) {
+    public void solve(boolean isPeriodic) {
+        for (Particle particle: this.particleList)
+            particle.removeAllNeighbours();
+
+        for (Particle particle: this.particleList) {
+            List<Particle> neighbours = getParticlesInRange(particle, isPeriodic);
+            neighbours.forEach(n -> {
+                particle.addNeighbour(n);
+                n.addNeighbour(particle);
+            });
+        }
+    }
+
+    private List<Particle> getParticlesInRange(Particle particle, boolean isPeriodic) {
         List<Particle> particlesInRange = new ArrayList<>();
         double cellSize = (double) spaceSize / gridM;
         int row = (int) (particle.getPosition().getX() / cellSize);
         int col = (int) (particle.getPosition().getY() / cellSize);
 
-        for (int i = row - 1; i <= row + 1; i++) {
-            for (int j = col - 1; j <= col + 1; j++) {
-                int currRow = Math.floorMod(i, gridM);
-                int currCol = Math.floorMod(j, gridM);
-                if (cells[currRow][currCol] == null
-                        || (!isPeriodic && (i < 0 || i >= gridM || j < 0 || j >= gridM)))
-                    continue;
+        for (int[] dir : DIRECTIONS) {
+            int currRow = row + dir[0];
+            int currCol = col + dir[1];
 
-                particlesInRange.addAll(cells[currRow][currCol].getParticles().stream().
-                        filter(other -> other.getId() != particle.getId()
-                                && particle.isColliding(other, isPeriodic, spaceSize, gridM))
-                        .collect(Collectors.toList()));
-            }
+            if ((!isPeriodic && (currRow < 0 || currRow >= gridM || currCol >= gridM)) ||
+                    cells[currRow][currCol] == null)
+                continue;
+
+            particlesInRange.addAll(cells[Math.floorMod(currRow, gridM)][Math.floorMod(currCol, gridM)]
+                    .getParticles().stream().filter(other -> other.getId() != particle.getId()
+                            && particle.isColliding(other, isPeriodic, spaceSize, gridM))
+                    .collect(Collectors.toList()));
         }
+
         return particlesInRange;
+    }
+
+    public void bruteForceSolve(boolean isPeriodic) {
+        for (Particle particle: this.particleList)
+            particle.removeAllNeighbours();
+
+        for (Particle particle: this.particleList) {
+            List<Particle> neighbours = bruteForceGetParticlesInRange(particle, isPeriodic);
+            neighbours.forEach(particle::addNeighbour);
+        }
+    }
+
+    private List<Particle> bruteForceGetParticlesInRange(Particle particle, boolean isPeriodic) {
+        return particleList.stream()
+                .filter(other -> other.getId() != particle.getId()
+                        && particle.isColliding(other, isPeriodic, spaceSize, gridM))
+                .collect(Collectors.toList());
     }
 }
