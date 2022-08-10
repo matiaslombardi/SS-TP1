@@ -53,16 +53,10 @@ public class Space {
     }
 
     public void solve(boolean isPeriodic) {
-        for (Particle particle: this.particleList)
-            particle.removeAllNeighbours();
-
-        for (Particle particle: this.particleList) {
-            List<Particle> neighbours = getParticlesInRange(particle, isPeriodic);
-            neighbours.forEach(n -> {
-                particle.addNeighbour(n);
-                n.addNeighbour(particle);
-            });
-        }
+        if (isPeriodic)
+            periodicSet();
+        else
+            setNeighbours();
     }
 
     private List<Particle> getParticlesInRange(Particle particle, boolean isPeriodic) {
@@ -72,18 +66,13 @@ public class Space {
         int row = getRow(position);
         int col = getCol(position);
 
-        for (int[] dir : DIRECTIONS) {
-            int currRow = row + dir[0];
-            int currCol = col + dir[1];
+            for (int[] dir : DIRECTIONS) {
+                int currRow = row + dir[0];
+                int currCol = col + dir[1];
 
-            if(!isPeriodic && (currRow < 0 || currRow >= gridM || currCol < 0 || currCol >= gridM))
-                continue;
-
-            currRow = Math.floorMod(currRow, gridM);
-            currCol = Math.floorMod(currCol, gridM);
-
-            if (cells[currRow][currCol] == null)
-                continue;
+                if (currRow < 0 || currRow >= gridM || currCol < 0
+                        || currCol >= gridM || cells[currRow][currCol] == null)
+                    continue;
 
             particlesInRange.addAll(cells[Math.floorMod(currRow, gridM)][Math.floorMod(currCol, gridM)]
                     .getParticles().stream()
@@ -95,14 +84,36 @@ public class Space {
         return particlesInRange;
     }
 
-    public void bruteForceSolve(boolean isPeriodic) {
-        for (Particle particle: this.particleList)
-            particle.removeAllNeighbours();
+    private void periodicSet() {
+        this.particleList.forEach(particle -> {
+            Point position = particle.getPosition();
+            int row = getRow(position);
+            int col = getCol(position);
 
-        for (Particle particle: this.particleList) {
-            List<Particle> neighbours = bruteForceGetParticlesInRange(particle, isPeriodic);
-            neighbours.forEach(particle::addNeighbour);
-        }
+            for (int[] dir : DIRECTIONS) {
+                int currRow = Math.floorMod(row + dir[0], gridM);
+                int currCol = Math.floorMod(col + dir[1], gridM);
+
+                if (cells[currRow][currCol] == null)
+                    continue;
+
+                cells[currRow][currCol].getParticles().stream()
+                        .filter(p -> particle.isColliding(p, true, spaceSize, gridM))
+                        .forEach(p -> {
+                            particle.addNeighbour(p);
+                            p.addNeighbour(particle);
+                        });
+            }
+        });
+    }
+
+    public void bruteForceSolve(boolean isPeriodic) {
+        particleList.forEach(particle -> particleList.stream()
+                .filter(p -> particle.isColliding(p, isPeriodic, spaceSize, gridM))
+                .forEach(p -> {
+                    particle.addNeighbour(p);
+                    p.addNeighbour(particle);
+                }));
     }
 
     private List<Particle> bruteForceGetParticlesInRange(Particle particle, boolean isPeriodic) {
