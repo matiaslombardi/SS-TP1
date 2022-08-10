@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ParticlesParser {
     public static void main(String[] args) {
@@ -71,7 +72,7 @@ public class ParticlesParser {
         Space space = new Space(spaceSize, Particle.getInteractRadius(), particleList);
 
         long start = System.currentTimeMillis();
-        space.solve(true);
+        space.solve(isPeriodic);
         long end = System.currentTimeMillis();
         System.out.println("CIM time: " + (end - start) + "ms");
 
@@ -90,9 +91,17 @@ public class ParticlesParser {
             System.exit(1);
         }
 
+        particleList.forEach(Particle::removeAllNeighbours);
+
         start = System.currentTimeMillis();
         space.bruteForceSolve(isPeriodic);
         end = System.currentTimeMillis();
         System.out.println("Brute force time: " + (end - start) + "ms");
+
+//        particleList.forEach(p -> {
+//            System.out.println(p.getId() + " " + p.getNeighbours()
+//                    .stream().map(Particle::getId).collect(Collectors.toList()));
+//        });
+
     }
 }

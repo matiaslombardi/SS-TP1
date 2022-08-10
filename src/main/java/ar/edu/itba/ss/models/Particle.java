@@ -20,6 +20,8 @@ public class Particle {
     }
 
     public boolean isColliding(Particle other, boolean isPeriodic, int spaceSize, int gridM) {
+        if (this.equals(other))
+            return false;
         double realDistance = position.distanceTo(other.getPosition(), isPeriodic, spaceSize, gridM)
                 - radius - other.getRadius();
 
