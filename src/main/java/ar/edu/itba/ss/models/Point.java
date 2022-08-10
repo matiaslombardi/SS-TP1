@@ -1,4 +1,4 @@
-package main.java.models;
+package main.java.ar.edu.itba.ss.models;
 
 public class Point {
     private double x;
@@ -9,8 +9,8 @@ public class Point {
         this.y = y;
     }
 
-    public double distanceTo(Point other, boolean isPeriodic, double spaceSize, int gridM) {
-        double cellSize = spaceSize / gridM;
+    public double distanceTo(Point other, boolean isPeriodic, int spaceSize, int gridM) {
+        double cellSize = (double) spaceSize / gridM;
 
         double dx = Math.abs(x - other.getX());
         if (isPeriodic && dx > 2 * cellSize)

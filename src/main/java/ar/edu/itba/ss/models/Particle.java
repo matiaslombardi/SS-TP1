@@ -1,21 +1,25 @@
-package main.java.models;
+package main.java.ar.edu.itba.ss.models;
 
 import java.util.*;
 
 public class Particle {
     private static double INTERACT_RADIUS;
+    private static long SEQ = 1;
     private final double radius;
     private Point position;
-    private final int id;
+    private double property;
+    private final long id;
     private final Set<Particle> neighbours;
 
-    public Particle(double radius, int id) {
+    public Particle(double radius, double property) {
         this.radius = radius;
-        this.id = id;
+        this.id = SEQ++;
+        this.property = property;
         this.neighbours = new HashSet<>();
+        this.property = property;
     }
 
-    public boolean isColliding(Particle other, boolean isPeriodic, double spaceSize, int gridM) {
+    public boolean isColliding(Particle other, boolean isPeriodic, int spaceSize, int gridM) {
         double realDistance = position.distanceTo(other.getPosition(), isPeriodic, spaceSize, gridM)
                 - radius - other.getRadius();
 
@@ -50,8 +54,12 @@ public class Particle {
         this.position = new Point(x, y);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
+    }
+
+    public double getProperty() {
+        return property;
     }
 
     public Set<Particle> getNeighbours() {
@@ -60,9 +68,7 @@ public class Particle {
 
     @Override
     public String toString() {
-        return "Particle{" +
-                "id=" + id +
-                '}';
+        return "Particle{" + "id=" + id + '}';
     }
 
     @Override

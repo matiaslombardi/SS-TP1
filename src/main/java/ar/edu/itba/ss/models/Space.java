@@ -1,48 +1,47 @@
-package main.java.models;
-
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+package main.java.ar.edu.itba.ss.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Space {
-    private final static int[][] DIRECTIONS =
-            new int[][]{new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 0}, new int[]{0, 1}, new int[]{1, 1}};
+    private final static int[][] DIRECTIONS = new int[][]{new int[]{-1, 0}, new int[]{-1, 1},
+            new int[]{0, 0}, new int[]{0, 1}, new int[]{1, 1}};
 
     private final Cell[][] cells;
     private final int spaceSize;
     private final int gridM;
+    private final double cellSize;
     private final List<Particle> particleList;
-    // private double interactionRadius;
 
-    private void validateParams(int spaceSize, int gridM, double interactionRadius,
-                                   List<Particle> particles) {
+    private void validateParams(double interactionRadius, List<Particle> particles) {
         double maxRadius = particles.stream()
                 .max((p1, p2) -> (int) (p1.getRadius() - p2.getRadius()))
                 .orElseThrow(RuntimeException::new).getRadius();
 
-        if ((double) spaceSize / gridM <= interactionRadius + 2 * maxRadius)
-            throw new RuntimeException("L/M");
+        if (cellSize <= interactionRadius + 2 * maxRadius)
+            throw new IllegalArgumentException("L/M does not allow interaction radius");
     }
 
     public Space(int spaceSize, int gridM, double interactionRadius, List<Particle> particles) {
-        validateParams(spaceSize, gridM, interactionRadius, particles);
+        this.cellSize = (double) spaceSize / gridM;
+        validateParams(interactionRadius, particles);
 
         this.cells = new Cell[gridM][gridM];
+
         this.spaceSize = spaceSize;
         this.gridM = gridM;
-        this.positionParticles(particles);
+
         this.particleList = particles;
+        this.positionParticles(particles);
 //        this.interactionRadius = interactionRadius;
     }
 
     private void positionParticles(List<Particle> particles) {
-        double cellSize = (double) spaceSize / gridM;
         for (Particle particle : particles) {
             Point position = particle.getPosition();
-            int row = (int) (position.getX() / cellSize);
-            int col = (int) (position.getY() / cellSize);
+            int row = getRow(position);
+            int col = getCol(position);
             if (cells[row][col] == null)
                 cells[row][col] = new Cell();
             cells[row][col].addParticle(particle);
@@ -64,20 +63,27 @@ public class Space {
 
     private List<Particle> getParticlesInRange(Particle particle, boolean isPeriodic) {
         List<Particle> particlesInRange = new ArrayList<>();
-        double cellSize = (double) spaceSize / gridM;
-        int row = (int) (particle.getPosition().getX() / cellSize);
-        int col = (int) (particle.getPosition().getY() / cellSize);
+
+        Point position = particle.getPosition();
+        int row = getRow(position);
+        int col = getCol(position);
 
         for (int[] dir : DIRECTIONS) {
             int currRow = row + dir[0];
             int currCol = col + dir[1];
 
-            if ((!isPeriodic && (currRow < 0 || currRow >= gridM || currCol >= gridM)) ||
-                    cells[currRow][currCol] == null)
+            if(!isPeriodic && (currRow < 0 || currRow >= gridM || currCol < 0 || currCol >= gridM))
+                continue;
+
+            currRow = Math.floorMod(currRow, gridM);
+            currCol = Math.floorMod(currCol, gridM);
+
+            if (cells[currRow][currCol] == null)
                 continue;
 
             particlesInRange.addAll(cells[Math.floorMod(currRow, gridM)][Math.floorMod(currCol, gridM)]
-                    .getParticles().stream().filter(other -> other.getId() != particle.getId()
+                    .getParticles().stream()
+                    .filter(other -> other.getId() != particle.getId()
                             && particle.isColliding(other, isPeriodic, spaceSize, gridM))
                     .collect(Collectors.toList()));
         }
@@ -100,5 +106,14 @@ public class Space {
                 .filter(other -> other.getId() != particle.getId()
                         && particle.isColliding(other, isPeriodic, spaceSize, gridM))
                 .collect(Collectors.toList());
+    }
+
+    private int getRow(Point position) {
+        return (int) (position.getX() / cellSize);
+    }
+
+
+    private int getCol(Point position) {
+        return (int) (position.getY() / cellSize);
     }
 }

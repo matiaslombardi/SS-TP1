@@ -1,17 +1,12 @@
-package main.java;
+package main.java.ar.edu.itba.ss;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
-import main.java.models.Particle;
-import main.java.models.Space;
-
+import main.java.ar.edu.itba.ss.models.Particle;
+import main.java.ar.edu.itba.ss.models.Space;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class ParticlesParser {
     public static void main(String[] args) {
@@ -28,17 +23,17 @@ public class ParticlesParser {
                 String line = myReader.nextLine();
                 String[] tokens = line.trim().split(" {4}");
                 if (tokens.length != 2)
-                    throw new RuntimeException("AAA"); // TODO custom exception
+                    throw new IllegalArgumentException("Invalid static.txt file");
 
                 double radius = Double.parseDouble(tokens[0]);
-//                double prop = Double.parseDouble(tokens[1]);
-                Particle particle = new Particle(radius, i);
+                double property = Double.parseDouble(tokens[1]);
+                Particle particle = new Particle(radius, property);
 //                Particle.setInteractRadius(prop);
                 particleList.add(particle);
             }
-        } catch (FileNotFoundException | RuntimeException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        } catch (FileNotFoundException | NoSuchElementException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
         }
 
         File dynamicFile = reader.getFile("dynamic.txt");
@@ -50,29 +45,26 @@ public class ParticlesParser {
                     String[] tokens = line.trim().split(" {3}");
 
                     if (tokens.length != 2)
-                        throw new RuntimeException("AAA"); // TODO custom exception
+                        throw new IllegalArgumentException("Invalid dynamic.txt file");
 
                     double x = Double.parseDouble(tokens[0]);
                     double y = Double.parseDouble(tokens[1]);
                     particleList.get(i).setPosition(x, y);
                 }
-
                 // TODO los calculos son en cada t_i
-
             }
-        } catch (FileNotFoundException | RuntimeException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        } catch (FileNotFoundException | NoSuchElementException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
         }
 
-        Particle.setInteractRadius(3); // TODO config
-        Space space = new Space(spaceSize, 10, Particle.getInteractRadius(), particleList);
+        Particle.setInteractRadius(10); // TODO config
+        Space space = new Space(spaceSize, 9, Particle.getInteractRadius(), particleList);
 
         long start = System.currentTimeMillis();
-        space.solve(false);
+        space.solve(true);
         long end = System.currentTimeMillis();
-        System.out.printf("CIM time: %dms\n", end - start);
-
+        System.out.println("CIM time: " + (end - start) + "ms");
 
         try (FileWriter writer = new FileWriter("out.txt")) {
             for (Particle particle : particleList) {
@@ -91,6 +83,6 @@ public class ParticlesParser {
         start = System.currentTimeMillis();
         space.bruteForceSolve(false);
         end = System.currentTimeMillis();
-        System.out.printf("Brute force time: %dms\n", end - start);
+        System.out.println("Brute force time: " + (end - start) + "ms");
     }
 }
