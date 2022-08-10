@@ -39,7 +39,6 @@ public class ParticlesParser {
                 double radius = Double.parseDouble(tokens[0]);
                 double property = Double.parseDouble(tokens[1]);
                 Particle particle = new Particle(radius, property);
-//                Particle.setInteractRadius(prop);
                 particleList.add(particle);
             }
         } catch (FileNotFoundException | NoSuchElementException | IllegalArgumentException e) {
@@ -62,22 +61,21 @@ public class ParticlesParser {
                     double y = Double.parseDouble(tokens[1]);
                     particleList.get(i).setPosition(x, y);
                 }
-                // TODO los calculos son en cada t_i
             }
         } catch (FileNotFoundException | NoSuchElementException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
             System.exit(1);
         }
 
-        Particle.setInteractRadius(10); // TODO config
-        Space space = new Space(spaceSize, 9, Particle.getInteractRadius(), particleList);
+
+        Space space = new Space(spaceSize, Particle.getInteractRadius(), particleList);
 
         long start = System.currentTimeMillis();
         space.solve(true);
         long end = System.currentTimeMillis();
         System.out.println("CIM time: " + (end - start) + "ms");
 
-        try (FileWriter writer = new FileWriter("out.txt")) {
+        try (FileWriter writer = new FileWriter(args[1])) {
             for (Particle particle : particleList) {
                 Set<Particle> neighbours = particle.getNeighbours();
                 StringBuilder out = new StringBuilder(String.format("%d", particle.getId()));
@@ -88,7 +86,8 @@ public class ParticlesParser {
                 writer.write(out.toString());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.exit(1);
         }
 
         start = System.currentTimeMillis();

@@ -14,6 +14,7 @@ public class Space {
     private final double cellSize;
     private final List<Particle> particleList;
 
+    /*
     private void validateParams(double interactionRadius, List<Particle> particles) {
         double maxRadius = particles.stream()
                 .max((p1, p2) -> (int) (p1.getRadius() - p2.getRadius()))
@@ -23,18 +24,21 @@ public class Space {
             throw new IllegalArgumentException("L/M does not allow interaction radius");
     }
 
-    public Space(int spaceSize, int gridM, double interactionRadius, List<Particle> particles) {
+     */
+
+    public Space(int spaceSize, double interactionRadius, List<Particle> particles) {
+        double maxRadius = particles.stream()
+                .max((p1, p2) -> (int) (p1.getRadius() - p2.getRadius()))
+                .orElseThrow(RuntimeException::new).getRadius();
+
+        this.spaceSize = spaceSize;
+        this.gridM = (int) Math.floor(spaceSize / (interactionRadius + 2 * maxRadius));
         this.cellSize = (double) spaceSize / gridM;
-        validateParams(interactionRadius, particles);
 
         this.cells = new Cell[gridM][gridM];
 
-        this.spaceSize = spaceSize;
-        this.gridM = gridM;
-
         this.particleList = particles;
         this.positionParticles(particles);
-//        this.interactionRadius = interactionRadius;
     }
 
     private void positionParticles(List<Particle> particles) {
