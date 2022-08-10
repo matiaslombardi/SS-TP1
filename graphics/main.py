@@ -30,7 +30,7 @@ with open("../out.txt", "r") as out_file:
 
     out_file.close()
 
-print(particles[14])
+# print(particles[14])
 
 x = [particle["x"] for particle in particles]
 y = [particle["y"] for particle in particles]

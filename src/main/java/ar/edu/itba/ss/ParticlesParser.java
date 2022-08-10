@@ -2,6 +2,7 @@ package main.java.ar.edu.itba.ss;
 
 import main.java.ar.edu.itba.ss.models.Particle;
 import main.java.ar.edu.itba.ss.models.Space;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -10,13 +11,23 @@ import java.util.*;
 
 public class ParticlesParser {
     public static void main(String[] args) {
+        if (args.length != 3) {
+            System.out.println("Usage: ParticlesParser <RC> <output name> <isPeriodic>");
+            System.exit(0);
+        }
+        Particle.setInteractRadius(Double.parseDouble(args[0]));
+        boolean isPeriodic = Boolean.parseBoolean(args[2]);
+        System.out.println(Particle.getInteractRadius());
+        System.out.println(args[1]);
+        System.out.println(isPeriodic);
+
         FileReader reader = new FileReader();
 
         File staticFile = reader.getFile("static.txt");
         int totalParticles = 0;
         int spaceSize = 0;
         List<Particle> particleList = new ArrayList<>();
-        try(Scanner myReader = new Scanner(staticFile)) {
+        try (Scanner myReader = new Scanner(staticFile)) {
             totalParticles = Integer.parseInt(myReader.nextLine().trim());
             spaceSize = Integer.parseInt(myReader.nextLine().trim());
             for (int i = 0; i < totalParticles; i++) {
@@ -37,7 +48,7 @@ public class ParticlesParser {
         }
 
         File dynamicFile = reader.getFile("dynamic.txt");
-        try(Scanner myReader = new Scanner(dynamicFile)) {
+        try (Scanner myReader = new Scanner(dynamicFile)) {
             while (myReader.hasNext()) {
                 myReader.nextLine();
                 for (int i = 0; i < totalParticles; i++) {
@@ -81,7 +92,7 @@ public class ParticlesParser {
         }
 
         start = System.currentTimeMillis();
-        space.bruteForceSolve(false);
+        space.bruteForceSolve(isPeriodic);
         end = System.currentTimeMillis();
         System.out.println("Brute force time: " + (end - start) + "ms");
     }
