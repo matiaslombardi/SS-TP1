@@ -39,13 +39,11 @@ with open("ovito.txt", "w") as ovito_file:
         category = "NN"
         if particle["id"] == selected:
             category = "S"
-        elif particle["id"] in particles[selected-1]["neighbours"]:
+        elif particle["id"] in particles[selected - 1]["neighbours"]:
             category = "N"
-#         category = "S" if particle["id"] == selected else "N" if particle in particles[selected]["neighbours"] else "NN"
-        ovito_file.write(f"{particle['radius']} {particle['x']} {particle['y']} {particle['radius']} {category}\n")
+        ovito_file.write(f"{particle['radius']} {particle['x']} {particle['y']} {category}\n")
     ovito_file.close()
 
-# print(particles[14])
 
 x = [particle["x"] for particle in particles]
 y = [particle["y"] for particle in particles]

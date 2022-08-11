@@ -1,4 +1,4 @@
-package main.java.ar.edu.itba.ss;
+package main.java.ar.edu.itba.ss.utils;
 
 import java.io.File;
 import java.util.Objects;
