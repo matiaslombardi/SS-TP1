@@ -7,14 +7,13 @@ public class Particle {
     private static long SEQ = 1;
     private final double radius;
     private Point position;
-    private double property;
+    private final double property;
     private final long id;
     private final Set<Particle> neighbours;
 
     public Particle(double radius, double property) {
         this.radius = radius;
         this.id = SEQ++;
-        this.property = property;
         this.neighbours = new HashSet<>();
         this.property = property;
     }
@@ -22,7 +21,7 @@ public class Particle {
     public boolean isColliding(Particle other, boolean isPeriodic, int spaceSize, int gridM) {
         if (this.equals(other))
             return false;
-        double realDistance = position.distanceTo(other.getPosition(), isPeriodic, spaceSize, gridM)
+        double realDistance = position.distanceTo(other.getPosition(), spaceSize, gridM)
                 - radius - other.getRadius();
 
         return Double.compare(realDistance, INTERACT_RADIUS) <= 0;
@@ -52,8 +51,8 @@ public class Particle {
         return position;
     }
 
-    public void setPosition(double x, double y) {
-        this.position = new Point(x, y);
+    public void setPosition(Point position) {
+        this.position = position;
     }
 
     public long getId() {

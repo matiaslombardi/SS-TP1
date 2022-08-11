@@ -1,9 +1,12 @@
 package main.java.ar.edu.itba.ss;
 
 import main.java.ar.edu.itba.ss.models.Particle;
+import main.java.ar.edu.itba.ss.models.PeriodicPoint;
+import main.java.ar.edu.itba.ss.models.Point;
 import main.java.ar.edu.itba.ss.models.Space;
 import main.java.ar.edu.itba.ss.utils.FileReader;
 import main.java.ar.edu.itba.ss.utils.ParticleGenerator;
+import main.java.ar.edu.itba.ss.utils.PointGetter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,10 +23,8 @@ public class ParticlesParser {
             System.exit(0);
         }
         Particle.setInteractRadius(Double.parseDouble(args[0]));
-        boolean isPeriodic = Boolean.parseBoolean(args[2]);
-        System.out.println(Particle.getInteractRadius());
-        System.out.println(args[1]);
-        System.out.println(isPeriodic);
+        boolean isPeriodic = Boolean.parseBoolean(args[4]);
+        PointGetter pointGetter = isPeriodic ? PeriodicPoint::new : Point::new;
 
         if (Boolean.parseBoolean(args[5]))
             ParticleGenerator.generate(args[1], args[2], 0.37, 1.0, 100, 100);
@@ -66,7 +67,7 @@ public class ParticlesParser {
 
                     double x = Double.parseDouble(tokens[0]);
                     double y = Double.parseDouble(tokens[1]);
-                    particleList.get(i).setPosition(x, y);
+                    particleList.get(i).setPosition(pointGetter.getPoint(x, y));
                 }
             }
         } catch (FileNotFoundException | NoSuchElementException | IllegalArgumentException e) {

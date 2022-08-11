@@ -1,26 +1,16 @@
 package main.java.ar.edu.itba.ss.models;
 
 public class Point {
-    private double x;
-    private double y;
+    protected double x;
+    protected double y;
 
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public double distanceTo(Point other, boolean isPeriodic, int spaceSize, int gridM) {
-        double cellSize = (double) spaceSize / gridM;
-
-        double dx = Math.abs(x - other.getX());
-        if (isPeriodic && dx > 2 * cellSize)
-            dx = spaceSize - dx;
-
-        double dy = Math.abs(y - other.getY());
-        if (isPeriodic && dy > 2 * cellSize)
-            dy = spaceSize - dy;
-
-        return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    public double distanceTo(Point other, int spaceSize, int gridM) {
+        return Math.sqrt(Math.pow(x - other.getX(), 2) + Math.pow(y - other.getY(), 2));
     }
 
     public double getX() {
