@@ -60,7 +60,7 @@ public class Space {
                     continue;
 
                 cells[currRow][currCol].getParticles().stream()
-                        .filter(p -> particle.isColliding(p, false, spaceSize, gridM))
+                        .filter(p -> particle.isColliding(p, spaceSize, gridM))
                         .forEach(p -> {
                             particle.addNeighbour(p);
                             p.addNeighbour(particle);
@@ -83,7 +83,7 @@ public class Space {
                     continue;
 
                 cells[currRow][currCol].getParticles().stream()
-                        .filter(p -> particle.isColliding(p, true, spaceSize, gridM))
+                        .filter(p -> particle.isColliding(p, spaceSize, gridM))
                         .forEach(p -> {
                             particle.addNeighbour(p);
                             p.addNeighbour(particle);
@@ -92,9 +92,9 @@ public class Space {
         });
     }
 
-    public void bruteForceSolve(boolean isPeriodic) {
+    public void bruteForceSolve() {
         particleList.forEach(particle -> particleList.stream()
-                .filter(p -> particle.isColliding(p, isPeriodic, spaceSize, gridM))
+                .filter(p -> particle.isColliding(p, spaceSize, gridM))
                 .forEach(p -> {
                     particle.addNeighbour(p);
                     p.addNeighbour(particle);

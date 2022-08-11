@@ -27,7 +27,7 @@ public class ParticlesParser {
         PointGetter pointGetter = isPeriodic ? PeriodicPoint::new : Point::new;
 
         if (Boolean.parseBoolean(args[5]))
-            ParticleGenerator.generate(args[1], args[2], 0.37, 1.0, 100, 100);
+            ParticleGenerator.generate(args[1], args[2], 0.37, 1.0, 10000, 20000);
 
         FileReader reader = new FileReader();
 
@@ -101,7 +101,7 @@ public class ParticlesParser {
         particleList.forEach(Particle::removeAllNeighbours);
 
         start = System.currentTimeMillis();
-        space.bruteForceSolve(isPeriodic);
+        space.bruteForceSolve();
         end = System.currentTimeMillis();
         System.out.println("Brute force time: " + (end - start) + "ms");
     }

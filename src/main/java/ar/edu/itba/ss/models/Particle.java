@@ -18,7 +18,7 @@ public class Particle {
         this.property = property;
     }
 
-    public boolean isColliding(Particle other, boolean isPeriodic, int spaceSize, int gridM) {
+    public boolean isColliding(Particle other, int spaceSize, int gridM) {
         if (this.equals(other))
             return false;
         double realDistance = position.distanceTo(other.getPosition(), spaceSize, gridM)
