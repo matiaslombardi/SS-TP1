@@ -1,9 +1,6 @@
 package main.java.ar.edu.itba.ss;
 
-import main.java.ar.edu.itba.ss.models.Particle;
-import main.java.ar.edu.itba.ss.models.PeriodicPoint;
-import main.java.ar.edu.itba.ss.models.Point;
-import main.java.ar.edu.itba.ss.models.SpaceM;
+import main.java.ar.edu.itba.ss.models.*;
 import main.java.ar.edu.itba.ss.utils.FileReader;
 import main.java.ar.edu.itba.ss.utils.ParticleGenerator;
 import main.java.ar.edu.itba.ss.utils.PointGetter;
@@ -75,7 +72,11 @@ public class DynamicMParticleParser {
         int maxGridM = (int) Math.floor(spaceSize / (Particle.getInteractRadius() + 2 * maxRadius));
 
         for (int gridM = 1; gridM <= maxGridM; gridM ++) {
-            SpaceM space = new SpaceM(spaceSize, Particle.getInteractRadius(), particleList, gridM);
+            particleList.forEach(Particle::removeAllNeighbours);
+
+            System.out.println("Antes de empezar hay: "+ (Integer) particleList.stream().map(p -> p.getNeighbours().size()).mapToInt(s -> s).sum());
+
+            Space space = new Space(spaceSize, gridM, Particle.getInteractRadius(), particleList);
 
             long start = System.currentTimeMillis();
             space.solve(false);

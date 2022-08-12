@@ -1,6 +1,7 @@
 package main.java.ar.edu.itba.ss.models;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Space {
     private final static int[][] DIRECTIONS = new int[][]{new int[]{-1, 0}, new int[]{-1, 1},
@@ -18,8 +19,10 @@ public class Space {
                 .max((p1, p2) -> (int) (p1.getRadius() - p2.getRadius()))
                 .orElseThrow(RuntimeException::new).getRadius();
 
+         */
+
         this.spaceSize = spaceSize;
-        this.gridM = (int) Math.floor(spaceSize / (interactionRadius + 2 * maxRadius));
+        this.gridM = gridM;//(int) Math.floor(spaceSize / (interactionRadius + 2 * maxRadius));
         this.cellSize = (double) spaceSize / gridM;
 
         this.cells = new Cell[gridM][gridM];
@@ -71,6 +74,8 @@ public class Space {
                         });
             }
         });
+
+        System.out.println("Despues hay: "+ (Integer) particleList.stream().map(p -> p.getNeighbours().size()).mapToInt(s -> s).sum());
     }
 
     private void periodicSet() {

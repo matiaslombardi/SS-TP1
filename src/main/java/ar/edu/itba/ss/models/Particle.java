@@ -1,5 +1,7 @@
 package main.java.ar.edu.itba.ss.models;
 
+import com.sun.java.browser.plugin2.DOM;
+
 import java.util.*;
 
 public class Particle {

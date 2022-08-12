@@ -76,7 +76,7 @@ public class ParticlesParser {
         }
 
 
-        Space space = new Space(spaceSize, Particle.getInteractRadius(), particleList);
+        Space space = new Space(spaceSize,10, Particle.getInteractRadius(), particleList);
 
         long start = System.currentTimeMillis();
         space.solve(isPeriodic);
