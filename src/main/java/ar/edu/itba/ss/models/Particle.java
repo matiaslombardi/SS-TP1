@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Particle {
     private static double INTERACT_RADIUS;
-    private static long SEQ = 1;
+    private static long SEQ = 0;
     private final double radius;
     private Point position;
     private final double property;

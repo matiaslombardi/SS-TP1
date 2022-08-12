@@ -27,7 +27,7 @@ public class ParticlesParser {
         PointGetter pointGetter = isPeriodic ? PeriodicPoint::new : Point::new;
 
         if (Boolean.parseBoolean(args[5]))
-            ParticleGenerator.generate(args[1], args[2], 40, 1.0, 10000, 20000);
+            ParticleGenerator.generate(args[1], args[2], 0.37, 1.0, 10000, 100);
 
         FileReader reader = new FileReader();
 

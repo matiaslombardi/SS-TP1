@@ -8,7 +8,7 @@ public class ParticleGenerator {
     public static void generate(String staticFile, String dynamicFile, double radius, double property,
                                 int totalParticles, int spaceSize) {
         double max = spaceSize - radius;
-        try (FileWriter writer = new FileWriter("src/main/resources/" + staticFile)) {
+        try (FileWriter writer = new FileWriter(staticFile)) {
             writer.write(totalParticles + "\n");
             writer.write(spaceSize + "\n");
             for (int i = 0; i < totalParticles; i++) {
@@ -19,7 +19,7 @@ public class ParticleGenerator {
             System.exit(1);
         }
 
-        try (FileWriter writer = new FileWriter("src/main/resources/" + dynamicFile)) {
+        try (FileWriter writer = new FileWriter(dynamicFile)) {
             writer.write("0\n");
             for (int i = 0; i < totalParticles; i++) {
                 writer.write(ThreadLocalRandom.current().nextDouble(radius, max) + " " +
