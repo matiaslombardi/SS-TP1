@@ -44,11 +44,30 @@ with open("ovito.txt", "w") as ovito_file:
         ovito_file.write(f"{particle['radius']} {particle['x']} {particle['y']} {category}\n")
     ovito_file.close()
 
+with open("../outM.txt", "r") as out_m_file:
+    m = []
+    t = []
+    
+    for idx in range(9):
+        [x, y] = [int(n) for n in out_m_file.readline().split()]
+        m.append(x)
+        t.append(y)
+    out_m_file.close()
 
-x = [particle["x"] for particle in particles]
-y = [particle["y"] for particle in particles]
+    plt.plot(m, t)
+    plt.xlabel('M')
+    plt.ylabel('t')
 
-plt.scatter(x, y)
 plt.show()
+
+
+
+# x = [particle["x"] for particle in particles]
+# y = [particle["y"] for particle in particles]
+
+# plt.scatter(x, y)
+# plt.show()
+
+
     
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 public class FileReader {
     public File getFile(String path) {
         try {
-            return new File(path);
+            return new File("src/files/" + path);
         } catch (NullPointerException e) {
             throw new RuntimeException(e);
         }

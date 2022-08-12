@@ -6,10 +6,10 @@ public class Space {
     private final static int[][] DIRECTIONS = new int[][]{new int[]{-1, 0}, new int[]{-1, 1},
             new int[]{0, 0}, new int[]{0, 1}, new int[]{1, 1}};
 
-    private final Cell[][] cells;
+    protected Cell[][] cells;
     private final int spaceSize;
-    private final int gridM;
-    private final double cellSize;
+    protected int gridM;
+    protected double cellSize;
     private final List<Particle> particleList;
 
     public Space(int spaceSize, double interactionRadius, List<Particle> particles) {
