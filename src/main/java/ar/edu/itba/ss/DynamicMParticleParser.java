@@ -18,7 +18,7 @@ public class DynamicMParticleParser {
     public static void main(String[] args) {
         Particle.setInteractRadius(1.0);
         PointGetter pointGetter = PeriodicPoint::new;
-        ParticleGenerator.generate("staticM.txt", "dynamicM.txt", 0.25, 1.0, 55, 20);
+        //ParticleGenerator.generate("src/files/staticM.txt", "src/files/dynamicM.txt", 2.5, 1.0, 55, 200);
 
         FileReader reader = new FileReader();
 
@@ -78,8 +78,9 @@ public class DynamicMParticleParser {
             SpaceM space = new SpaceM(spaceSize, Particle.getInteractRadius(), particleList, gridM);
 
             long start = System.currentTimeMillis();
-            space.solve(true);
+            space.solve(false);
             long end = System.currentTimeMillis();
+//            System.out.println(start + " " + end);
             System.out.println(gridM + " " + (end - start) + "ms");
             times.put(gridM, end - start);
         }

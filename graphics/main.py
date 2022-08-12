@@ -47,8 +47,9 @@ with open("ovito.txt", "w") as ovito_file:
 with open("../outM.txt", "r") as out_m_file:
     m = []
     t = []
-    
-    for idx in range(9):
+
+    print("range" + str(33))
+    for idx in range(33):
         [x, y] = [int(n) for n in out_m_file.readline().split()]
         m.append(x)
         t.append(y)

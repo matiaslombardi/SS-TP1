@@ -10,9 +10,10 @@ public class Space {
     private final int spaceSize;
     protected int gridM;
     protected double cellSize;
-    private final List<Particle> particleList;
+    protected List<Particle> particleList;
 
-    public Space(int spaceSize, double interactionRadius, List<Particle> particles) {
+    public Space(int spaceSize, int gridM, double interactionRadius, List<Particle> particles) {
+        /*
         double maxRadius = particles.stream()
                 .max((p1, p2) -> (int) (p1.getRadius() - p2.getRadius()))
                 .orElseThrow(RuntimeException::new).getRadius();
@@ -27,7 +28,7 @@ public class Space {
         this.positionParticles(particles);
     }
 
-    private void positionParticles(List<Particle> particles) {
+    protected void positionParticles(List<Particle> particles) {
         for (Particle particle : particles) {
             Point position = particle.getPosition();
             int row = getRow(position);
@@ -39,10 +40,13 @@ public class Space {
     }
 
     public void solve(boolean isPeriodic) {
-        if (isPeriodic)
+
+        if (isPeriodic) {
             periodicSet();
-        else
+        }
+        else{
             setNeighbours();
+        }
     }
 
     private void setNeighbours() {
